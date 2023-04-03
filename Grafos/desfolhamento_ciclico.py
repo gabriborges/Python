@@ -32,20 +32,20 @@ def centro_grafo(G):
         
         num_vertices = len(grafo.nodes())
 
+        if len(folhas)==0:
+            print('Folhas vazias, não há nenhuma folha a ser retirada mais.')
+            return list(grafo.nodes())
         i+=1
         j+=1
         print(f'Cada vertice com seu grau (Retirada de folha: {i}): {graus_vertices}')
         print(f'Folhas (Interação {j}): {folhas}')
-
-        if i > controlador_iterações:
-            print("\n O grafo está causando interações infinitas, o problema pode ser a existencia de ciclo(s).\n")
-            quit()
     
     # retorna o centro
     return list(grafo.nodes())
 
-lista_conexoes = [(1,2),(2,3),(3,4),(4,5),(4,6),(6,7)]
-#lista_conexoes = [(1,2),(2,3),(1,3),(1,4)]  
+#lista_conexoes = [(1,2),(2,3),(3,4),(4,5),(4,6),(6,7)]
+lista_conexoes = [(1,2),(2,3),(1,3),(1,4)]
+lista_conexoes = [(1,2),(2,3),(3,4),(1,4),(4,5)]
 
 Grafo = gp.Graph()
 Grafo.add_edges_from(lista_conexoes)
@@ -55,4 +55,4 @@ Centro = centro_grafo(Grafo)
 if len(Centro)==2:
     print ("Centro: {0}, {1}".format(min(Centro),max(Centro)))
 else:
-    print('Centro: ', Centro[0])
+    print('Centro: ', Centro)
