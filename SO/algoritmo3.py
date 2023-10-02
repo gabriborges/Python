@@ -1,50 +1,45 @@
 import threading
 import time
 
-CA = False
-CB = False
-
-def processo_A():
-    global CA, CB
-    while True:
-        CA = True
-        while CB:
-            pass
-        regiao_critica_A()
-        CA = False
-        processamento_A()
-
-def processo_B():
-    global CA, CB
-    while True:
-        CB = True
-        while CA:
-            pass 
-        regiao_critica_B()
-        CB = False
-        processamento_B()
-
-def regiao_critica_A():
-    print("Entrou na Região Crítica A")
-    time.sleep(1)
-    print("Saiu da Região Crítica A")
-
-def processamento_A():
-    print("Processamento A fora da Região Crítica")
-    time.sleep(1)
-
-def regiao_critica_B():
-    print("Entrou na Região Crítica B")
-    time.sleep(1)
-    print("Saiu da Região Crítica B")
-
-def processamento_B():
-    print("Processamento B fora da Região Crítica")
-    time.sleep(1)
+vez = 0 
+lock = threading.Lock()
 
 
-thread1 = threading.Thread(target=processo_A)
-thread2 = threading.Thread(target=processo_B)
+def processoA():
+    global vez
+    for _ in range(2):
+        print("Início do Processo A")
+        with lock:
+            while vez != 0:
+                print("Processo A em Espera Ocupada")
+        # região crítica
+        for _ in range(3):
+            print("Região Crítica de A")
+        vez = 1
+        # região não crítica
+        for _ in range(3):
+            print("Região NÃO Crítica de A")
+            time.sleep(0.01)
+
+
+def processoB():
+    global vez
+    for _ in range(2):
+        print("Início do Processo B")
+        with lock:
+            while vez != 1:
+                print("Processo B em Espera Ocupada")
+        # região crítica
+        for _ in range(3):
+            print("Região Crítica de B")
+        vez = 0
+        # região não crítica
+        for _ in range(3):
+            print("Região NÃO Crítica de B")
+
+
+thread1 = threading.Thread(target=processoA)
+thread2 = threading.Thread(target=processoB)
 
 thread1.start()
 thread2.start()

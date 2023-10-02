@@ -1,42 +1,40 @@
 import threading
 import time
 
-vez = 0 
-lock = threading.Lock()
-
+travaA = False
+travaB = False
 
 def processoA():
-    global vez
+    global travaA
     for _ in range(2):
         print("Início do Processo A")
-        with lock:
-            while vez != 0:
-                print("Processo A em Espera Ocupada")
+        travaA = True
+        while travaB:
+            print("Processo A em Espera")
         # região crítica
         for _ in range(3):
             print("Região Crítica de A")
-        vez = 1
+        travaA = False
         # região não crítica
         for _ in range(3):
             print("Região NÃO Crítica de A")
-            time.sleep(0.01)
-
+            time.sleep(1)
 
 def processoB():
-    global vez
+    global travaB
     for _ in range(2):
         print("Início do Processo B")
-        with lock:
-            while vez != 1:
-                print("Processo B em Espera Ocupada")
+        travaB = True
+        while travaA:
+            print("Processo B em Espera")
         # região crítica
         for _ in range(3):
             print("Região Crítica de B")
-        vez = 0
+        travaB = False
         # região não crítica
         for _ in range(3):
             print("Região NÃO Crítica de B")
-
+            time.sleep(1)
 
 thread1 = threading.Thread(target=processoA)
 thread2 = threading.Thread(target=processoB)
